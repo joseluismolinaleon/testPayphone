@@ -1,0 +1,33 @@
+parameters:
+  serviceConnection: ''
+  environment: ''
+  appName: ''
+  resourceGroupName: ''
+  keyVaultName: ''
+
+jobs:
+  - deployment: Deploy
+    displayName: Deploy to ${{ parameters.environment }}
+    environment: ${{ parameters.environment }}
+    pool:
+      vmImage: 'ubuntu-latest'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - task: DownloadPipelineArtifact@2
+              displayName: Download Artifact
+              inputs:
+                artifactName: drop
+            - task: AzureWebApp@1
+              displayName: 'App Service Deploy'
+              inputs:
+                azureSubscription: ${{ parameters.serviceConnection }}
+                appType: webAppLinux
+                appName: ${{ parameters.appName }}
+                resourceGroupName: ${{ parameters.resourceGroupName }}
+                package: '$(Pipeline.Workspace)/drop/*.zip'
+                appSettings:
+                  -KeyVaultName ${{ parameters.keyVaultName }}
+                  -Stackify__AppName ${{ parameters.appName }}
+                  -Stackify__Environment ${{ parameters.environment }}

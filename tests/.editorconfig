@@ -1,0 +1,6 @@
+# .NET Style Rules
+# https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/language-rules#net-style-rules
+[*.{cs,csx,cake,vb,vbx}]
+# Identifiers should not contain underscores
+dotnet_diagnostic.CA1707.severity = none
+dotnet_code_quality.CA1707.api_surface = public, protected

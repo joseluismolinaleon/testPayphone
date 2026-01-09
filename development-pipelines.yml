@@ -1,0 +1,55 @@
+resources:
+  repositories:
+    - repository: templates
+      type: git
+      name: PayphoneMicroservices/shared-pipelines
+
+trigger:
+  batch: true
+  branches:
+      include:
+        - '*'
+      exclude:
+        - main
+        - <squad>/release/*
+  paths:
+    exclude:
+      - infrax/**
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - group: globalConfig
+
+stages:
+- stage: Build
+  displayName: 'Build Stage'
+  jobs:
+    - template: templates/build.yml@templates
+
+- stage: Test
+  displayName: 'Test Stage'
+  dependsOn: Build
+  jobs:
+    - template: templates/test.yml@templates
+
+- stage: Deploy
+  displayName: 'Deploy'
+  dependsOn: Test
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/<squad>/develop'))
+  jobs:
+    - template: templates/deploy.yml
+      parameters:
+        serviceConnection: $(developmentServiceConnection)
+        environment: 'Development'
+        appName: $(appName)
+        resourceGroupName: $(resourceGroupName)
+        keyVaultName: $(keyVaultName)
+
+- stage: HealthCheck
+  displayName: 'Health Check'
+  dependsOn: Deploy
+  condition: succeeded()
+  jobs:
+    - template: templates/healthcheck.yml@templates
