@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using CustomerValidationSystem.Application.Common.Exceptions;
 using CustomerValidationSystem.Application.Transactions.Commands.Create;
 using CustomerValidationSystem.Application.Transactions.DTOs;
@@ -13,7 +14,8 @@ namespace CustomerValidationSystem.API.Controllers.v1;
 /// Controlador para gestionar transacciones con validación de scoring.
 /// </summary>
 [ApiController]
-[Route("api/v1/[controller]")]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
 [Produces("application/json")]
 public class TransactionsController : ControllerBase
 {

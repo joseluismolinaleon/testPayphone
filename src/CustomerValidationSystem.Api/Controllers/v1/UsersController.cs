@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using CustomerValidationSystem.Application.Users.Commands.Create.Commands.Create;
 using CustomerValidationSystem.Application.Users.DTOs;
 using CustomerValidationSystem.Application.Users.Queries.GetAll;
@@ -8,7 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace CustomerValidationSystem.Api.Controllers.v1;
 
 [ApiController]
-[Route("api/v1/[controller]")]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
 [Produces("application/json")]
 public class UsersController : ControllerBase
 {
